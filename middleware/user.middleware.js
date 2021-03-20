@@ -1,6 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const { extractToken, getUserIdFromToken } = require('../Helpers/helpers');
+const { extractToken } = require('../Helpers/helpers');
 
 exports.verifyUser = async (req, res, next) => {
   const { authorization } = req.headers;

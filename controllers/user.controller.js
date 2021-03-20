@@ -41,11 +41,6 @@ exports.signin = async (req, res, next) => {
 
 exports.addAddress = async (req, res, next) => {
   const { firstname, lastname, street, city, pincode, landmark, phone, state } = req.body;
-  
-  //Check for user ID
-  // if (userId === '' || userId === 'undefined') {
-  //   return res.status(422).json({ code: 422, message: 'Invalid User Signature' });
-  // } 
 
   // Phone number Validation
   if (phone === undefined || phone === '') {
@@ -76,13 +71,7 @@ exports.addAddress = async (req, res, next) => {
 }
 
 exports.getAddress = async (req, res, next) => {
-  const { userId } = req.query;
-
-  if (userId === '' || userId === undefined) {
-    return res.status(422).json({ code: 422, message: 'Missing Params' })
-  }
-
-  AddressService.getUserAddresses(userId)
+  AddressService.getUserAddresses(req.headers)
   .then((resp) => {
     res.status(resp.code).json(resp);
     next();
@@ -121,17 +110,17 @@ exports.updateAddress = async (req,res, next) => {
 }
 
 exports.deleteAddress = async (req, res, next) => {
-  const { addressId, userId } = req.query;
+  const { addressId } = req.query;
 
-  if (addressId === '' || addressId === undefined || userId === '' || userId === undefined) {
+  if (addressId === '' || addressId === undefined) {
     return res.status(422).json({ code: 422, message: 'Something Is Missing' });
   }
 
-  AddressService.deleteAddress(addressId, userId)
+  AddressService.deleteAddress(addressId, req.headers)
   .then((resp) => {
     res.status(resp.code).json(resp);
     next();
-  })
+  });
 }
 
 exports.verifyToken = async (req, res, next) => {

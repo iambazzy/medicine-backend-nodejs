@@ -38,8 +38,11 @@ exports.addAddress = async (addressData, headers) => {
 }
 
 // GET ADDRESS
-exports.getUserAddresses = async (userId) => {
+exports.getUserAddresses = async (headers) => {
   try {
+    const token = extractToken(headers['authorization']);
+    const userId = getUserIdFromToken(token);
+
     const user = await User.findById(userId);
     
     if (!user) {
@@ -84,8 +87,11 @@ exports.updateUserAddress = async (addressId, addressData) => {
 }
 
 // DELETE ADDRESS
-exports.deleteAddress = async (addressId, userId) => {
+exports.deleteAddress = async (addressId, headers) => {
   try {
+    const token = extractToken(headers['authorization']);
+    const userId = getUserIdFromToken(token);
+
     const user = await User.findById(userId);
 
     if (!user) {

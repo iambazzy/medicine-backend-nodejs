@@ -9,9 +9,9 @@ router.post('/signin', UserController.signin);
 router.post('/verify', UserController.verifyToken);
 
 // Address
-router.post('/add-address', verifyUser ,UserController.addAddress);
-router.get('/get-address', UserController.getAddress);
-router.put('/update-address', UserController.updateAddress);
-router.delete('/delete-address', UserController.deleteAddress);
+router.post('/add-address', verifyUser, UserController.addAddress);
+router.get('/get-address', verifyUser, UserController.getAddress);
+router.put('/update-address', verifyUser, UserController.updateAddress);
+router.delete('/delete-address', verifyUser, UserController.deleteAddress);
 
 module.exports = router;

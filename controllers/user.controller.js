@@ -1,4 +1,4 @@
-const UserService = require('../services/user.service')    
+const UserService = require('../services/user.service'); 
 const AddressService = require('../services/address.service');
 
 // SIGNING UP A USER

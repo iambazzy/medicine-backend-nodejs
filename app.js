@@ -18,6 +18,9 @@ app.use('/user', userRoute);
 const medicineRoute = require('./routes/medicine.route');
 app.use('/medicine', medicineRoute);
 
+const adminRoute = require('./routes/admin.route');
+app.use('/administrator', adminRoute);
+
 
 app.listen(process.env.PORT, () => {
   console.log(chalk.green.bold(`Server started successfully on port - localhost:${process.env.PORT}`));

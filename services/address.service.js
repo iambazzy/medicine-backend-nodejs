@@ -8,30 +8,51 @@ exports.addAddress = async (addressData, headers) => {
     const token = extractToken(headers['authorization']);
     const userId = getUserIdFromToken(token);
     
-    const user = await User.findById(userId);
+    const user = await User.findById(userId, { addresses: 1 });
 
     if(!user) {
       return { code: 400, message: 'No User Found' };
     }
 
-    // Saving user Address
-    const address = await Address.create(addressData);
+    // User already has some addresses
+    if (user.addresses !== null) {
+      const userAddresses = await Address.findOne({ _id: user.addresses });
 
-    if (!user.addresses.includes(address._id)) {
-      // Check if user has 5 or less than 5 addresses
-      if (user.addresses.length < 5) {
-        const updatedUser = await User.updateOne(
-          { _id: userId }, 
-          { $push: { addresses: address._id } }
+      // If Addresses are less than 5 then save
+      if (userAddresses.addresses.length < 5) {
+        const updatedAddress = await Address.updateOne(
+          { _id: user.addresses },
+          { $push: { addresses: addressData } }
         );
-        return { code: 200, message: 'Address Saved Successfully' };
+
+        // Push into array and save.
+        if (updatedAddress) {
+          return { code: 200, message: 'Address Was Saved Successfully' };
+        }
       } else {
-        return { code: 400, message: 'You can only have upto 5 addresses' };
+        return { code: 400, message: 'User can only save upto 5 addresses' };
       }
     } else {
-      return { code: 400, message: 'Address Id Exists' };
-    }
+      // User has no address - create one
+      const address = await Address.create({ addresses: addressData });
 
+      // If address got saved successfully
+      if (address) {
+        const updatedUser = await User.updateOne(
+          { _id: userId },
+          { addresses: address._id }
+        );
+
+        // If User Was Updated Successfully
+        if (updatedUser) {
+          return { code: 200, message: 'Address Was Saved Successfully' };
+        } else {
+          return { code: 400, message: 'Something Went Wrong While Saving Your Address.' };
+        }
+      } else {
+        return { code: 400, message: 'Something Went Wrong While Saving Your Address.' };
+      }
+    }
   } catch (e) {
     throw Error(e);  
   }
@@ -49,8 +70,8 @@ exports.getUserAddresses = async (headers) => {
       return { code: 404, message: 'No user found' };
     }
 
-    const userAddressIds = user.addresses;    
-    const records = await Address.find().where('_id').in(userAddressIds).exec();
+    const userAddressId = user.addresses;    
+    const records = await Address.findOne({ _id: userAddressId });
     
     return {
       code: 200,
@@ -63,24 +84,38 @@ exports.getUserAddresses = async (headers) => {
 }
 
 // UPDATE ADDRESS
-exports.updateUserAddress = async (addressId, addressData) => {
+exports.updateUserAddress = async (addressId, addressData, headers) => {
   try {
-    const address = await Address.exists({ _id: addressId });
+    const token = extractToken(headers['authorization']);
+    const userId = getUserIdFromToken(token);
 
-     // If address does not exist
-     if (address === false) {
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return { code: 404, message: 'No user found' };
+    }
+
+    const userAddressId = user.addresses; 
+    const { addresses } = await Address.findOne({ _id: userAddressId });
+
+    if (!addresses) {
+      return { code: 400, message: 'Something Went Wrong' };
+    }
+
+    const addressIndex = addresses.findIndex((address) => address['id'] === addressId);
+    addresses[addressIndex] = addressData;
+
+    const data= await Address.findOneAndUpdate({ _id: userAddressId }, { addresses: addresses }, { new: true });
+
+    if (addresses) {
       return {
-        code: 404,
-        message: 'No address exists'
+        code: 200,
+        message: 'Address Updated Successfully',
+        data: data.addresses
       }
-    }
-
-    const updatedAddress = await Address.findOneAndUpdate({ _id: addressId }, addressData, { new: true });
-    return {
-      code: 200,
-      message: 'Address Updated Successfully',
-      data: updatedAddress
-    }
+    } else {
+      return { code: 400, message: 'Address was not updated.' }
+    } 
   } catch (e) {
     throw Error(e);
   }
@@ -93,36 +128,31 @@ exports.deleteAddress = async (addressId, headers) => {
     const userId = getUserIdFromToken(token);
 
     const user = await User.findById(userId);
-
+    
     if (!user) {
-      return {
-        code: 404,
-        message: 'No user found'
-      }
+      return { code: 404, message: 'No user found' };
     }
 
-    // Update user adresses array (delete address id)
-    const toDelete = user.addresses.indexOf(addressId);
+    const userAddressId = user.addresses; 
+    const { addresses } = await Address.findOne({ _id: userAddressId });
 
-    // If address not found
-    if (toDelete === -1 || toDelete === null || toDelete === undefined) {
-      return {
-        code: 404,
-        message: 'Address Not Found'
-      }
+    if (!addresses) {
+      return { code: 400, message: 'Something Went Wrong' };
     }
 
-    user.addresses.splice(toDelete, 1);
-    const updatedUser = await User.findOneAndUpdate({ _id: userId }, { "$set": { "addresses": user.addresses } });
+    const filteredAddresses = addresses.filter((address) => address['id'] !== addressId);
 
-    // Delete Address in address collection
-    const deletedAddress = await Address.findOneAndDelete({ _id: addressId });
-    if (updatedUser && updatedUser._id && deletedAddress && deletedAddress._id) { 
+    const updatedAddress = await Address.findOneAndUpdate({ _id: userAddressId }, { addresses: filteredAddresses }, { new: true });
+    
+    if (updatedAddress) {
       return {
         code: 200,
-        message: 'Deleted Address Successfully'
+        message: 'Address Removed Successfully',
+        data: updatedAddress
       }
-    }
+    } else {
+      return { code: 400, message: 'Address was not deleted' }
+    } 
   } catch (e) {
     throw Error(e);
   }

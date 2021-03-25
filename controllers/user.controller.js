@@ -39,6 +39,7 @@ exports.signin = async (req, res, next) => {
   });
 }
 
+// Add address
 exports.addAddress = async (req, res, next) => {
   const { firstname, lastname, street, city, pincode, landmark, phone, state } = req.body;
 
@@ -70,6 +71,7 @@ exports.addAddress = async (req, res, next) => {
   });
 }
 
+// Get address
 exports.getAddress = async (req, res, next) => {
   AddressService.getUserAddresses(req.headers)
   .then((resp) => {
@@ -78,6 +80,7 @@ exports.getAddress = async (req, res, next) => {
   });
 }
 
+// Update Address
 exports.updateAddress = async (req,res, next) => {
   const { addressId } = req.query;
   const { firstname, lastname, street, city, pincode, landmark, phone, state } = req.body;
@@ -102,13 +105,14 @@ exports.updateAddress = async (req,res, next) => {
     return res.status(422).json({ code: 422, message: 'Something In Address Is Missing' });
   }
 
-  AddressService.updateUserAddress(addressId, req.body)
+  AddressService.updateUserAddress(addressId, req.body, req.headers)
   .then((resp) => {
     res.status(resp.code).json(resp);
     next();
   });
 }
 
+// Delete Address
 exports.deleteAddress = async (req, res, next) => {
   const { addressId } = req.query;
 
@@ -123,6 +127,7 @@ exports.deleteAddress = async (req, res, next) => {
   });
 }
 
+// VErify Token
 exports.verifyToken = async (req, res, next) => {
   const { token } = req.body;
   UserService.verifytoken(token)

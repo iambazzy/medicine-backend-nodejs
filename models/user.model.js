@@ -11,8 +11,16 @@ const UserSchema  = new mongoose.Schema({
     required: true
   },
   addresses: {
-    type: [String],
-    default: []
+    type: String,
+    default: null
+  },
+  orders: {
+    type: String,
+    default: null
+  },
+  cart: {
+    type: String,
+    default: null
   },
   phone: {
     type: String,

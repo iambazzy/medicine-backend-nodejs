@@ -1,7 +1,12 @@
 require('dotenv').config();
 const User = require('../models/user.model');
+const Cart = require('../models/cart.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
+// Empty Cart Template 
+const { EMPTY_CART } = require('../Helpers/helpers');
+
 
 // CREATE NEW USER
 exports.createUser = async (userData) => {
@@ -17,7 +22,24 @@ exports.createUser = async (userData) => {
     } 
 
     // IF USER DOES NOT FOUND THEN CREATE USER
-    const data = await User.create(userData);
+
+    // INITIALIZE EMPTY CART FOR USER
+    const { _id } = await Cart.create(EMPTY_CART);
+
+    if (!_id) {
+      return {
+        code: 409,
+        message: 'Something Went Wrong - Please Try Again later!'
+      }
+    }
+
+    const userWithCart = {
+      ...userData,
+      cart: _id
+    }
+
+    // CREATE USER WITH CART
+    const data = await User.create(userWithCart);
     return {
       email: data.email,
       code: 200,

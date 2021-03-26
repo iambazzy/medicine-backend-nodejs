@@ -105,7 +105,7 @@ exports.updateUserAddress = async (addressId, addressData, headers) => {
     const addressIndex = addresses.findIndex((address) => address['id'] === addressId);
     addresses[addressIndex] = addressData;
 
-    const data= await Address.findOneAndUpdate({ _id: userAddressId }, { addresses: addresses }, { new: true });
+    const data = await Address.findOneAndUpdate({ _id: userAddressId }, { addresses: addresses }, { new: true });
 
     if (addresses) {
       return {

@@ -19,3 +19,17 @@ exports.extractToken = (s) => {
     throw Error('Cant extract token', e);
   }
 }
+
+// exports.checkPincode = (pincode) => {
+//   const allowedPincodes = [190009, 190001, 190018, 190002, ];
+//   if (allowedPincodes.indexOf(pincode) !== -1) {
+//     return true;
+//   }
+//   return false;
+// }
+
+exports.EMPTY_CART = {
+  total: 0,
+  products: [],
+  shippingCost: 0
+}

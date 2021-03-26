@@ -21,6 +21,8 @@ app.use('/medicine', medicineRoute);
 const adminRoute = require('./routes/admin.route');
 app.use('/administrator', adminRoute);
 
+const cartRoute = require('./routes/cart.route');
+app.use('/cart', cartRoute);
 
 app.listen(process.env.PORT, () => {
   console.log(chalk.green.bold(`Server started successfully on port - localhost:${process.env.PORT}`));

@@ -2,9 +2,11 @@ require('dotenv').config();
 const express = require('express');
 const chalk = require('chalk');
 const helmet = require('helmet');
+const { checkRequest } = require('./middleware/global.middleware');
 const app = express();
 
 app.use(helmet());
+app.use(checkRequest);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

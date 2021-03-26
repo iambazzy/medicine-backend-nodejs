@@ -39,7 +39,7 @@ exports.signin = async (req, res, next) => {
   });
 }
 
-// Add address
+// ADD ADDRESS
 exports.addAddress = async (req, res, next) => {
   const { firstname, lastname, street, city, pincode, landmark, phone, state } = req.body;
 

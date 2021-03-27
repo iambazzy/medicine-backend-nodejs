@@ -3,8 +3,15 @@ const express = require('express');
 const chalk = require('chalk');
 const helmet = require('helmet');
 const { checkRequest } = require('./middleware/global.middleware');
+const cors = require('cors');
 const app = express();
 
+// const cors_options = {
+//   origin: 'http://betterlifekashmir.com',
+//   optionsSuccessStatus: 200
+// }
+
+app.use(cors());
 app.use(helmet());
 app.use(checkRequest);
 app.use(express.json());
@@ -27,5 +34,5 @@ const cartRoute = require('./routes/cart.route');
 app.use('/cart', cartRoute);
 
 app.listen(process.env.PORT, () => {
-  console.log(chalk.green.bold(`Server started successfully on port - localhost:${process.env.PORT}`));
+  console.log(chalk.green.bold(`[${process.env.NODE_ENV}] Server started successfully on port - localhost:${process.env.PORT}`));
 });

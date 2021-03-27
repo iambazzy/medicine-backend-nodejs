@@ -2,14 +2,24 @@ require('dotenv').config();
 const chalk = require('chalk');
 const mongoose = require('mongoose');
 
-const dbOptions = {
-  dbName: process.env.DB_NAME,
+const dbOptions = {}
+
+if (process.env.NODE_ENV === 'production') {
+  dbOptions['dbName'] = process.env.PROD_DB_NAME;
+  dbOptions['useNewUrlParser'] = true;
+  dbOptions['useUnifiedTopology'] = true;
+  dbOptions['useFindAndModify'] = false;
+  dbOptions['useCreateIndex'] = true;
   // user: process.env.DB_USER,
   // pass: process.env.DB_PASS,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
+} else {
+  dbOptions['dbName'] = process.env.DEV_DB_NAME;
+  dbOptions['useNewUrlParser'] = true;
+  dbOptions['useUnifiedTopology'] = true;
+  dbOptions['useFindAndModify'] = false;
+  dbOptions['useCreateIndex'] = true;
+  // user: process.env.DB_USER,
+  // pass: process.env.DB_PASS,
 }
 
 module.exports = () => {

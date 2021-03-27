@@ -25,11 +25,20 @@ exports.addMedicine = async (req, res, next) => {
 
 // GET MEDICINES
 exports.getMedicine = async (req, res, next) => {
-  MedicineService.getMedicines(req.body)
-  .then((resp) => {
-    res.status(resp.code).json(resp);
-    next();
-  });
+  if (Object.keys(req.query).length === 0) {
+    MedicineService.getMedicines()
+    .then((resp) => {
+      res.status(resp.code).json(resp);
+      next();
+    });
+  } else {
+    const { id } = req.query;
+    MedicineService.getMedicineById(id)
+    .then((resp) => {
+      res.status(resp.code).json(resp);
+      next();
+    });
+  }
 }
 
 // UPDATE MEDICINES

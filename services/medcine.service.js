@@ -45,7 +45,7 @@ exports.getMedicines = async () => {
 
 exports.getMedicineById = async (medicineId) => {
   try {
-    const medicine = await Medicine.findById(medicineId);
+    const medicine = await Medicine.findOne({ _id: medicineId });
 
     // If medicine exists
     if (medicine) {

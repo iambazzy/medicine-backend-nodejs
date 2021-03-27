@@ -85,7 +85,6 @@ exports.signIn = async (userData) => {
       return {
         email,
         token,
-        id: userFound._id,
         code: 200,
         message: 'Logged In Successfully'
       }
@@ -107,7 +106,7 @@ exports.verifytoken = async (token) => {
   // CHECK IF TOKEN IS VALID
   try {
     const data = await jwt.verify(token, process.env.SECRET);
-    return { code: 200, data, valid: true, message: 'Valid Signature!'};
+    return { code: 200, valid: true, message: 'Valid Signature!'};
   } catch(e) {
     return { code: 401, valid: false, message: 'Invalid Signature!'};
   }

@@ -25,13 +25,28 @@ exports.addMedicine = async (req, res, next) => {
 
 // GET MEDICINES
 exports.getMedicine = async (req, res, next) => {
-  if (Object.keys(req.query).length === 0) {
-    MedicineService.getMedicines()
+  // SIMPLE GET FOR MEDS
+  if (Object.keys(req.query).includes('nop')) {
+    const { nop } = req.query;
+    MedicineService.getMedicines(parseInt(nop))
     .then((resp) => {
       res.status(resp.code).json(resp);
       next();
     });
-  } else {
+  } 
+
+  // GET BASED ON SEARCH TERM
+  else if (Object.keys(req.query).includes('q')) {
+    const { q } = req.query;
+    MedicineService.searchMedicines(q)
+    .then((resp) => {
+      res.status(resp.code).json(resp);
+      next();
+    });
+  } 
+
+  // GET BASED ON ID
+  else {
     const { id } = req.query;
     MedicineService.getMedicineById(id)
     .then((resp) => {

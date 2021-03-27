@@ -29,10 +29,10 @@ exports.addMedicine = async (medicineData) => {
   }
 }
 
-exports.getMedicines = async () => {
+exports.getMedicines = async (nop = 0) => {
   // Fetch all medicines
   try {
-    const medicines = await Medicine.find({});
+    const medicines = await Medicine.find().skip(nop).limit(20);
     return {
       code: 200,
       message: 'Success',
@@ -41,6 +41,23 @@ exports.getMedicines = async () => {
   } catch (e) {
     throw Error(e);
   }
+}
+
+exports.searchMedicines = async (query) => {
+  // Fetch Medicines
+  const buildQuery = {};
+  buildQuery['name'] = { "$regex": query , "$options": 'i' };
+  try {
+    const medicines = await Medicine.find(buildQuery).skip(0).limit(20);
+    return {
+      code: 200,
+      message: 'Success',
+      data: medicines
+    }
+  } catch (e) {
+    throw Error(e);
+  }
+
 }
 
 exports.getMedicineById = async (medicineId) => {

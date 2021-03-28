@@ -48,7 +48,7 @@ exports.searchMedicines = async (query) => {
   const buildQuery = {};
   buildQuery['name'] = { $regex : new RegExp('^' + query) }
   try {
-    const medicines = await Medicine.find(buildQuery).skip(0).limit(20).lean().explain();
+    const medicines = await Medicine.find(buildQuery).skip(0).limit(20).lean();
     return {
       code: 200,
       message: 'Success',

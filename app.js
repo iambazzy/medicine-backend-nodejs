@@ -2,15 +2,22 @@ require('dotenv').config();
 const express = require('express');
 const chalk = require('chalk');
 const helmet = require('helmet');
+// const rateLimit = require("express-rate-limit");
 const { checkRequest } = require('./middleware/global.middleware');
 const cors = require('cors');
 const app = express();
+
+// const loginLimiter = rateLimit({
+//   windowMs: 5 * 60 * 1000, 
+//   max: 5, 
+//   message: 'Requests are coming in a very huge amount, Restricting access.'
+// });
 
 // const cors_options = {
 //   origin: 'http://betterlifekashmir.com',
 //   optionsSuccessStatus: 200
 // }
-
+// app.use(loginLimuter);
 app.use(cors());
 app.use(helmet());
 app.use(checkRequest);

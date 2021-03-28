@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const MedicineSchema  = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   composition: {
     type: String,
@@ -38,6 +38,8 @@ const MedicineSchema  = new mongoose.Schema({
     default: Date.now()
   }
 })
+
+MedicineSchema.index({ "name": 1 }, { unique: true });
 
 const Medicine = mongoose.model('Medicine', MedicineSchema)
 

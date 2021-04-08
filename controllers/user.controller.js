@@ -41,7 +41,7 @@ exports.signin = async (req, res, next) => {
 
 // ADD ADDRESS
 exports.addAddress = async (req, res, next) => {
-  const { firstname, lastname, street, city, pincode, landmark, phone, state } = req.body;
+  const { firstname, lastname, street, pincode, landmark, phone } = req.body;
 
   // Phone number Validation
   if (phone === undefined || phone === '') {
@@ -59,7 +59,7 @@ exports.addAddress = async (req, res, next) => {
   }
 
   // Address Validations
-  if (street === '' || city === '' || pincode === '' || landmark === '' || state === '') {
+  if (street === '' || pincode === '' || landmark === '') {
     return res.status(422).json({ code: 422, message: 'Something In Address Is Missing' });
   }
 

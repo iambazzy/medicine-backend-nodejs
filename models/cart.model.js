@@ -9,7 +9,7 @@ const CartSchema  = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now()
-  }
+  },
 });
 
 const Cart = mongoose.model('Cart', CartSchema);

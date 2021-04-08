@@ -40,6 +40,9 @@ app.use('/administrator', adminRoute);
 const cartRoute = require('./routes/cart.route');
 app.use('/cart', cartRoute);
 
+const ordersRoute = require('./routes/orders.route');
+app.use('/orders', ordersRoute);
+
 app.listen(process.env.PORT, () => {
   console.log(chalk.green.bold(`[${process.env.NODE_ENV}] Server started successfully on port - localhost:${process.env.PORT}`));
 });
